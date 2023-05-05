@@ -44,3 +44,24 @@ enleveBP([HCode1|BCode1], [HCode2|BCode2], [HCode1|Code1Result], [HCode2|Code2Re
 enleveBP([], [], [], []).
 
 ?- enleveBP([1,2,3,4,5,6], [1,2,5,4,3,4], Code1Result, Code2Result), write(Code1Result), nl, write(Code2Result), nl.
+
+% on suppose que les 2 codes ont la même longueur
+nMalPlace(Code1, Code2, Result) :- 
+    enleveBP(Code1, Code2, Code1Result, _),
+    longueur(Code1Result, Result).
+
+?- nMalPlace([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
+
+?- write("----------").
+
+% créé un code de taille N basé sur M couleurs.
+% MARCHE PAS
+codeur(M, N, [Random|Code]) :- 
+    write(M), write(N),
+    Max is M+1,
+    random(1, Max, Random),
+    newN is N-1,
+    codeur(M, newN, Code).
+codeur(_, 0, []) :- !.
+
+?- codeur(4, 4, Code), write(Code), nl.
