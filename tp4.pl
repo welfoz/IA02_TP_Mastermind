@@ -1,20 +1,15 @@
 % IA02 - TP4 - Masterming en prolog
 
 % étant donnés 2 codes Code1 et Code2, donne le nombre de couleurs bien placées.
-nBienPlace([HCode1|BCode1], [HCode2|BCode2], BP) :-
-    HCode1 = HCode2,
-    nBienPlace(BCode1, BCode2, BP1),
-    BP is BP1 + 1.
-
-nBienPlace([_|BCode1], [_|BCode2], BP) :- nBienPlace(BCode1, BCode2, BP).
-
 nBienPlace([], [], 0).
+nBienPlace([H|B1], [H|B2], Nb) :- nBienPlace(B1, B2, Nb1), Nb is Nb1 + 1.
+nBienPlace([_|B1], [_|B2], Nb) :- nBienPlace(B1, B2, Nb).
 
 %?- nBienPlace([1,2,3,4], [1,2,3,5], BP), write(BP), nl.
 
 longueur([], 0).
-longueur([_|L], N) :-
-    longueur(L, N1),
+longueur([_|B], N) :-
+    longueur(B, N1),
     N is N1 + 1.
 
 %?- longueur([1,2,3,4], N), write(N), nl.
@@ -26,14 +21,14 @@ gagne(Code1, Code2) :- longueur(Code1, N), nBienPlace(Code1, Code2, N).
 
 % vérifie que l’élément E appartient à la liste L.
 element(X, [X|_]).
-element(X, [_|R]) :- element(X,R).
+element(X, [_|B]) :- element(X,B).
 
 %?- (element(2, [1,2,3,4]) -> write('true') ; write('false')), nl.
 
 % construit la liste L2 de telle sorte qu’elle soit identique à L1 privée de la première occurrence de E.
-enleve(_, [], L2).
-enleve(E, [E|BL1], BL1).
-enleve(E, [HL1|BL1], [HL1|L2]) :- dif(E, HL1), enleve(E, BL1, L2).
+enleve(_, [], []).
+enleve(E, [E|B], B).
+enleve(E, [H|B], [H|L2]) :- dif(E, H), enleve(E, B, L2).
 
 %?- enleve(2, [1,2,3,4], L2), write(L2), nl.
 
