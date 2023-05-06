@@ -50,12 +50,14 @@ nMalPlace(Code1, Code2, Result) :-
     enleveBP(Code1, Code2, Code1Result, Code2Result),
     nElements(Code1Result, Code2Result, Result).
 
-nElements([HCode1|BCode1], Code2, Total) :-
-    nElements(BCode1, Code2, Result),
-    (element(HCode1, Code2) -> Total is Result+1 ; Total = Result).
+% compte le nombre de fois où un element de Code1 est dans Code2
 nElements([], _, 0).
-?- nMalPlace([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
-?- nMalPlace([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
+nElements([H|B], Code2, Total) :-
+    nElements(B, Code2, Result),
+    (element(H, Code2) -> Total is Result+1 ; Total = Result).
+
+% ?- nMalPlace([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
+% ?- nMalPlace([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
 
 %?- write("----------"), nl.
 
@@ -87,4 +89,4 @@ tour(Max, Code) :-
     write("Mal placé : "), write(MP), nl,
     (gagne(Proposition, Code) -> write('Vous avez gagné !'), ! ; newMax is Max-1, tour(newMax, Code)).
 
-%?- jouons(5, 4, 10).
+?- jouons(5, 4, 10).
