@@ -54,7 +54,6 @@ nElements([HCode1|BCode1], Code2, Total) :-
     nElements(BCode1, Code2, Result),
     (element(HCode1, Code2) -> Total is Result+1 ; Total = Result).
 nElements([], _, 0).
-% BUG ICI
 ?- nMalPlace([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
 ?- nMalPlace([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
 
