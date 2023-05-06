@@ -50,7 +50,7 @@ nMalPlace(Code1, Code2, Result) :-
     enleveBP(Code1, Code2, Code1Result, Code2Result),
     nElements(Code1Result, Code2Result, Result).
 
-nElements([HCode1, BCode1], Code2, Total) :-
+nElements([HCode1|BCode1], Code2, Total) :-
     nElements(BCode1, Code2, Result),
     (element(HCode1, Code2) -> Total is Result+1 ; Total = Result).
 nElements([], _, 0).
