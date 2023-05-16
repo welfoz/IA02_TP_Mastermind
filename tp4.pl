@@ -55,8 +55,8 @@ nMalPlacesAux([HCode1 | BCode1], Code2, Total) :-
     nMalPlacesAux(BCode1, Code2, Result),
     (element(HCode1, Code2) -> Total is Result+1 ; Total = Result).
 
-?- nMalPlacesAux([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
-?- nMalPlaces([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
+%?- nMalPlacesAux([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
+%?- nMalPlaces([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
 
 %?- write("----------"), nl.
 
@@ -74,7 +74,7 @@ codeur(M, N, Code) :-
 % permet de jouer en tant que décodeur, code de taille N basé sur M couleurs, Max le nombre de tours.
 jouons(M, N, Max) :-
     codeur(M, N, Code),
-    write("Code : "), write(Code), nl,
+    %write("Code : "), write(Code), nl,
     tour(Max, Code).
 
 tour(0, _) :- write("Vous avez perdu !"), nl, !.
@@ -86,6 +86,6 @@ tour(Max, Code) :-
     write("Bien placé : "), write(BP), nl,
     nMalPlaces(Proposition, Code, MP),
     write("Mal placé : "), write(MP), nl,
-    (gagne(Proposition, Code) -> write('Vous avez gagné !'), ! ; newMax is Max-1, tour(newMax, Code)).
+    (gagne(Proposition, Code) -> write('Vous avez gagné !'), ! ; NewMax is Max-1, tour(NewMax, Code)).
 
-%?- jouons(5, 4, 10).
+?- jouons(5, 4, 10).
