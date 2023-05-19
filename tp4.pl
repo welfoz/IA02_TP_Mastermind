@@ -77,7 +77,7 @@ jouons(M, N, Max) :-
     %write("Code : "), write(Code), nl,
     tour(Max, Code).
 
-tour(0, _) :- write("Vous avez perdu !"), nl, !.
+tour(0, Code) :- write("Vous avez perdu ! Le code était: "), write(Code), nl, !.
 tour(Max, Code) :-
     write("Il reste "), write(Max), write(" tours"), nl,
     write("Entrez votre code : "), nl,
