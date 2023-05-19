@@ -46,18 +46,17 @@ enleveBP([], [], [], []).
 %?- enleveBP([1,2,3,4,5,6], [1,2,5,4,3,4], Code1Result, Code2Result), write(Code1Result), nl, write(Code2Result), nl.
 
 % donne le nombre d’éléments mal placés
-nMalPlace(Code1, Code2, Result) :- 
+nMalPlaces(Code1, Code2, Result) :- 
     enleveBP(Code1, Code2, Code1Result, Code2Result),
-    nElements(Code1Result, Code2Result, Result).
+    nMalPlacesAux(Code1Result, Code2Result, Result).
 
-% compte le nombre de fois où un element de Code1 est dans Code2
-nElements([], _, 0).
-nElements([H|B], Code2, Total) :-
-    nElements(B, Code2, Result),
-    (element(H, Code2) -> Total is Result+1 ; Total = Result).
+nMalPlacesAux([], _, 0).
+nMalPlacesAux([HCode1 | BCode1], Code2, Total) :-
+    nMalPlacesAux(BCode1, Code2, Result),
+    (element(HCode1, Code2) -> Total is Result+1 ; Total = Result).
 
-% ?- nMalPlace([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
-% ?- nMalPlace([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
+%?- nMalPlacesAux([1,2,3,4], [4,3,2,1], MP), write(MP), nl.
+%?- nMalPlaces([1,2,3,4], [1,3,2,1], MP), write(MP), nl.
 
 %?- write("----------"), nl.
 
@@ -75,7 +74,7 @@ codeur(M, N, Code) :-
 % permet de jouer en tant que décodeur, code de taille N basé sur M couleurs, Max le nombre de tours.
 jouons(M, N, Max) :-
     codeur(M, N, Code),
-    write("Code : "), write(Code), nl,
+    %write("Code : "), write(Code), nl,
     tour(Max, Code).
 
 tour(0, _) :- write("Vous avez perdu !"), nl, !.
@@ -85,8 +84,8 @@ tour(Max, Code) :-
     read(Proposition),
     nBienPlace(Proposition, Code, BP),
     write("Bien placé : "), write(BP), nl,
-    nMalPlace(Proposition, Code, MP),
+    nMalPlaces(Proposition, Code, MP),
     write("Mal placé : "), write(MP), nl,
-    (gagne(Proposition, Code) -> write('Vous avez gagné !'), ! ; newMax is Max-1, tour(newMax, Code)).
+    (gagne(Proposition, Code) -> write('Vous avez gagné !'), ! ; NewMax is Max-1, tour(NewMax, Code)).
 
 ?- jouons(5, 4, 10).
