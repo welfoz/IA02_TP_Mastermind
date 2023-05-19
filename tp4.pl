@@ -1,9 +1,9 @@
 % IA02 - TP4 - Masterming en prolog
 
 % étant donnés 2 codes Code1 et Code2, donne le nombre de couleurs bien placées.
-nBienPlace([], [], 0).
-nBienPlace([H|B1], [H|B2], Nb) :- nBienPlace(B1, B2, Nb1), Nb is Nb1 + 1.
-nBienPlace([_|B1], [_|B2], Nb) :- nBienPlace(B1, B2, Nb).
+nBienPlaces([], [], 0).
+nBienPlaces([H|B1], [H|B2], Nb) :- nBienPlaces(B1, B2, Nb1), Nb is Nb1 + 1.
+nBienPlaces([_|B1], [_|B2], Nb) :- nBienPlaces(B1, B2, Nb).
 
 %?- nBienPlace([1,2,3,4], [1,2,3,5], BP), write(BP), nl.
 
@@ -15,7 +15,7 @@ longueur([_|B], N) :-
 %?- longueur([1,2,3,4], N), write(N), nl.
 
 % vérifie que les codes 1 et 2 sont identiques. 
-gagne(Code1, Code2) :- longueur(Code1, N), nBienPlace(Code1, Code2, N).
+gagne(Code1, Code2) :- longueur(Code1, N), nBienPlaces(Code1, Code2, N).
 
 %?- (gagne([1,2,3,4], [1,2,3,4]) -> write('true') ; write('false')), nl.
 
@@ -82,10 +82,63 @@ tour(Max, Code) :-
     write("Il reste "), write(Max), write(" tours"), nl,
     write("Entrez votre code : "), nl,
     read(Proposition),
-    nBienPlace(Proposition, Code, BP),
+    nBienPlaces(Proposition, Code, BP),
     write("Bien placé : "), write(BP), nl,
     nMalPlaces(Proposition, Code, MP),
     write("Mal placé : "), write(MP), nl,
     (gagne(Proposition, Code) -> write('Vous avez gagné !'), ! ; NewMax is Max-1, tour(NewMax, Code)).
 
-?- jouons(5, 4, 10).
+% ?- jouons(5, 4, 10).
+
+decodeur(M, N, Hist, Code) :-
+    gen(M, N, Code),
+    test(Code, Hist),
+    !.
+
+liste_couleurs(M, M, [M]).
+liste_couleurs(Min, Max, [Min|L]) :-
+    Min < Max,
+    NMin is Min + 1,
+    liste_couleurs(NMin, Max, L).
+
+gen(_, 0, []).
+gen(M, N, [E|Code]) :-
+    N > 0,
+    liste_couleurs(1, M, L),
+    member(E, L),
+    NN is N-1,
+    gen(M, NN, Code).
+
+test(Code, Hist) :-
+    test0(Code, Hist),
+    test1(Code, Hist),
+    test2(Code, Hist).
+
+test0(_, []).
+test0(Code1, [prop(Code2, _, _)|B]) :-
+    dif(Code1, Code2),
+    test0(Code1, B).
+
+%?- test0([1,2,3,4],[prop([1, 3, 1, 2], 2, 2), prop([1, 1, 2, 2], 2, 1), prop([1, 1, 1, 1], 2, 0)]).
+%?- test0([1,3,1,2], [prop([1, 3, 1, 2], 2, 2), prop([1, 1, 2, 2], 2, 1), prop([1, 1, 1, 1], 2, 0)]).
+
+test1(_, []).
+test1(Code1, [prop(Code2, NBP2, _)|B]) :-
+    nBienPlaces(Code1, Code2, NBP1),
+    NBP1 = NBP2,
+    test1(Code1, B).
+
+%?- test1([1,2,3,4], [prop([1,3,1,2],1,_), prop([1,2,2,2],2,_), prop([1,1,1,1],1,_)]).
+%?- test1([1,2,3,4], [prop([1,3,1,2],1,_), prop([1,2,2,2],2,_), prop([1,1,1,1],2,_)]).
+
+test2(_, []).
+test2(Code1, [prop(Code2, _, NMP2)|B]) :-
+    nMalPlaces(Code1, Code2, NMP1),
+    NMP1 = NMP2,
+    test2(Code1, B).
+
+%?- test2([1,2,3,4], [prop([1,3,1,2],_,2), prop([1,2,2,2],_,0), prop([1,1,1,1],_,0)]).
+%?- test2([1,2,3,4], [prop([1,3,1,2],_,2), prop([1,2,2,2],_,1), prop([1,1,1,1],_,0)]).
+
+%?- test([1,3,2,1], [prop([1,3,1,2],2,2), prop([1,1,2,2],2,1), prop([1,1,1,1],2,0)]).
+%?- test([1,3,2,1], [prop([1,3,1,2],2,3), prop([1,1,2,2],2,1), prop([1,1,1,1],2,0)]).
